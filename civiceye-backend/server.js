@@ -160,6 +160,59 @@ app.get('/api/complaints/my', verifyToken, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+// Get Admin Dashboard Statistics
+app.get('/api/dashboard/stats', verifyToken, async (req, res) => {
+  try {
+    // Count documents based on their status
+    const totalComplaints = await Complaint.countDocuments();
+    const pending = await Complaint.countDocuments({ 
+      status: { $in: ['Submitted', 'AI Classified', 'Assigned', 'In Progress'] } 
+    });
+    const resolved = await Complaint.countDocuments({ status: 'Resolved' });
+    
+    // You can add more complex queries here later for SLA breaches or Critical issues
+    
+    res.status(200).json({
+      total: totalComplaints,
+      pending: pending,
+      resolved: resolved
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+// Update complaint status / assign department (Admin / Official)
+app.patch('/api/complaints/:id/status', verifyToken, async (req, res) => {
+  try {
+    const { status, assignedDepartment, resolutionComment } = req.body;
+    
+    const updateData = {};
+    if (status) updateData.status = status;
+    if (assignedDepartment) updateData.assignedDepartment = assignedDepartment;
+    
+    // If marking as resolved, add resolution data
+    if (status === 'Resolved') {
+      updateData['resolution.comment'] = resolutionComment || 'Marked resolved by official.';
+    }
+
+    const updatedComplaint = await Complaint.findByIdAndUpdate(
+      req.params.id,
+      { $set: updateData },
+      { new: true } // Returns the updated document
+    );
+
+    if (!updatedComplaint) {
+      return res.status(404).json({ message: 'Complaint not found' });
+    }
+
+    res.status(200).json({
+      message: 'Complaint updated successfully!',
+      complaint: updatedComplaint
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 app.get('/', (req, res) => {
   res.send('CivicEye Backend is running!');
 });
