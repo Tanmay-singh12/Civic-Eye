@@ -1,1 +1,6 @@
 .env
+<<<<<<< HEAD
+=======
+node_modules/
+uploads/
+>>>>>>> 118dd21 (Member 3 Final Commit)
