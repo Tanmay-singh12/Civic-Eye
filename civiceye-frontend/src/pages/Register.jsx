@@ -2,25 +2,36 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { users } from "../data/dummyData";
 
-function Login() {
+function Register() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleRegister = (e) => {
     e.preventDefault();
 
-    const user = users.find(
-      (u) => u.email === email && u.password === password
-    );
+    const existingUser = users.find((u) => u.email === email);
 
-    if (!user) {
-      alert("Invalid email or password");
+    if (existingUser) {
+      alert("Email already registered");
       return;
     }
 
-    localStorage.setItem("currentUser", JSON.stringify(user));
+    const newUser = {
+      id: `U00${users.length + 1}`,
+      name,
+      email,
+      password,
+      role: "citizen",
+    };
+
+    users.push(newUser);
+
+    localStorage.setItem("currentUser", JSON.stringify(newUser));
+
+    alert("Registration successful!");
 
     navigate("/dashboard");
   };
@@ -33,6 +44,7 @@ function Login() {
         <div className="mx-auto flex max-w-7xl items-center px-8 py-6">
 
           <Link to="/" className="flex items-center gap-4">
+
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white font-bold text-black">
               CE
             </div>
@@ -46,13 +58,14 @@ function Login() {
                 Civic Intelligence
               </p>
             </div>
+
           </Link>
 
         </div>
       </nav>
 
-      {/* Login Section */}
-      <main className="flex min-h-[calc(100vh-89px)] items-center justify-center px-6">
+      {/* Register Section */}
+      <main className="flex min-h-[calc(100vh-89px)] items-center justify-center px-6 py-12">
 
         <div className="w-full max-w-md">
 
@@ -64,19 +77,38 @@ function Login() {
             </div>
 
             <h2 className="text-3xl font-semibold tracking-tight">
-              Welcome back
+              Create your account
             </h2>
 
             <p className="mt-2 text-sm text-gray-500">
-              Login to your CivicEye account
+              Join CivicEye and help improve your city
             </p>
 
           </div>
 
-          {/* Login Card */}
+          {/* Register Card */}
           <div className="rounded-2xl border border-[#292929] bg-[#0d0d0d] p-8">
 
-            <form onSubmit={handleLogin} className="space-y-5">
+            <form
+              onSubmit={handleRegister}
+              className="space-y-5"
+            >
+
+              {/* Name */}
+              <div>
+                <label className="mb-2 block text-sm font-medium text-gray-300">
+                  Full Name
+                </label>
+
+                <input
+                  type="text"
+                  placeholder="Enter your full name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  className="w-full rounded-lg border border-[#333] bg-[#080808] px-4 py-3 text-white outline-none placeholder:text-gray-600 transition focus:border-white"
+                />
+              </div>
 
               {/* Email */}
               <div>
@@ -96,51 +128,43 @@ function Login() {
 
               {/* Password */}
               <div>
-                <div className="mb-2 flex justify-between">
-                  <label className="block text-sm font-medium text-gray-300">
-                    Password
-                  </label>
-
-                  <button
-                    type="button"
-                    className="text-xs text-gray-500 hover:text-white"
-                  >
-                    Forgot password?
-                  </button>
-                </div>
+                <label className="mb-2 block text-sm font-medium text-gray-300">
+                  Password
+                </label>
 
                 <input
                   type="password"
-                  placeholder="Enter your password"
+                  placeholder="Create a password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  minLength={6}
                   className="w-full rounded-lg border border-[#333] bg-[#080808] px-4 py-3 text-white outline-none placeholder:text-gray-600 transition focus:border-white"
                 />
               </div>
 
-              {/* Login Button */}
+              {/* Register Button */}
               <button
                 type="submit"
                 className="w-full rounded-lg bg-white py-3.5 font-medium text-black transition hover:bg-gray-200"
               >
-                Login
+                Create Account
               </button>
 
             </form>
 
-            {/* Register */}
+            {/* Login */}
             <div className="mt-6 border-t border-[#292929] pt-6 text-center">
 
               <p className="text-sm text-gray-500">
-                Don't have an account?
+                Already have an account?
               </p>
 
               <Link
-                to="/register"
+                to="/login"
                 className="mt-2 inline-block text-sm font-medium text-white hover:underline"
               >
-                Create a CivicEye account →
+                Login to CivicEye →
               </Link>
 
             </div>
@@ -167,4 +191,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Register;
