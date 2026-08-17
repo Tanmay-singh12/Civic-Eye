@@ -9,4 +9,10 @@ function AdminDashboard() {
   );
 }
 
+import { MOCK_COMPLAINTS } from "../../data/mockComplaints";
+
+// console.log("CivicEye mock complaints:", MOCK_COMPLAINTS);
+// console.log("Total complaints:", MOCK_COMPLAINTS.length);
+
+
 export default AdminDashboard;
