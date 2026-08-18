@@ -18,13 +18,13 @@ import {
   Sparkles,
   ImageIcon,
 } from 'lucide-react'
+import afterRepairedImg from './assets/after_repaired.jpg'
 
 const API_URL = 'http://localhost:5000/api/resolution/verify'
 
 const BEFORE_IMG =
   'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=1200&h=800&fit=crop&q=80'
-const AFTER_IMG =
-  'https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=1200&h=800&fit=crop&q=80'
+const AFTER_IMG = afterRepairedImg
 
 /* ═══════════════════════════════════════════════════════════════
    Before / After Comparison Slider
