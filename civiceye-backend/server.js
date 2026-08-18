@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const User = require('./models/User'); // Import the User model you created earlier
 
 const Department = require('./models/Department');
+const resolutionRoutes = require('./src/routes/resolutionRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -14,6 +15,9 @@ const PORT = process.env.PORT || 5000;
 // Middleware MUST come before routes
 app.use(express.json());
 app.use(cors());
+
+// Resolution verification routes (Gemini AI)
+app.use('/api/resolution', resolutionRoutes);
 
 // MongoDB Connection
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/civiceye';
@@ -80,8 +84,8 @@ app.post('/api/auth/login', async (req, res) => {
 
     // Generate JWT Token
     const token = jwt.sign(
-      { userId: user._id, role: user.role }, 
-      process.env.JWT_SECRET, 
+      { userId: user._id, role: user.role },
+      process.env.JWT_SECRET,
       { expiresIn: '1d' }
     );
 
